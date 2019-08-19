@@ -6,6 +6,7 @@
   "directories": {
     "test": "tests"
   },
+  "files":["codegen.js"],
   "dependencies": {},
   "devDependencies": {
     "chai": "^4.2.0",
