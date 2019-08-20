@@ -1,12 +1,14 @@
 {
   "name": "luacodegen",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Generate Lua Code from the an ast",
   "main": "codegen.js",
   "directories": {
     "test": "tests"
   },
-  "files":["codegen.js"],
+  "files": [
+    "codegen.js"
+  ],
   "dependencies": {},
   "devDependencies": {
     "chai": "^4.2.0",
