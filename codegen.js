@@ -90,7 +90,7 @@ const nodeHandlers = {
   },
   WhileStatement(node) {
     let out = "";
-    out += `while (${gen(node.condition)}) do\n`;
+    out += `while ${gen(node.condition)} do\n`;
     out += indent(node.body.map(gen).join("\n"));
     out += "\nend";
     return out;
@@ -124,12 +124,12 @@ const nodeHandlers = {
     return `${node.clauses.map(gen).join("\n")}\nend`;
   },
   IfClause(node) {
-    return `if (${gen(node.condition)}) then\n${indent(
+    return `if ${gen(node.condition)} then\n${indent(
       node.body.map(gen).join("\n")
     )}`;
   },
   ElseifClause(node) {
-    return `elseif (${gen(node.condition)}) then\n${indent(
+    return `elseif ${gen(node.condition)} then\n${indent(
       node.body.map(gen).join("\n")
     )}`;
   },
