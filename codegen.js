@@ -8,7 +8,7 @@ const indent = x =>
 
 const nodeHandlers = {
   BreakStatement(node) {
-    return "break";
+    return "break;";
   },
   ReturnStatement(node) {
     let out = "";
@@ -30,7 +30,7 @@ const nodeHandlers = {
     return node.raw;
   },
   StringLiteral(node) {
-    return node.raw;
+    return ` ${node.raw} `; // prevent `[[[` in code
   },
   StringCallExpression(node) {
     return `${gen(node.base)}${gen(node.argument)}`;
@@ -42,16 +42,16 @@ const nodeHandlers = {
     return `${gen(node.base)}(${node.arguments.map(gen).join(", ")})`;
   },
   CallStatement(node) {
-    return gen(node.expression);
+    return `${gen(node.expression)};`;
   },
   GotoStatement(node) {
-    return `goto ${gen(node.label)}`;
+    return `goto ${gen(node.label)};`;
   },
   LabelStatement(node) {
     return `::${gen(node.label)}::`;
   },
   TableConstructorExpression(node) {
-    return `{ ${node.fields.map(gen).join(", ")} }`;
+    return `({ ${node.fields.map(gen).join(", ")} })`;
   },
   TableValue(node) {
     return gen(node.value);
@@ -73,33 +73,33 @@ const nodeHandlers = {
     return out;
   },
   UnaryExpression(node) {
-    return `${node.operator} ${gen(node.argument)}`;
+    return `(${node.operator} ${gen(node.argument)})`;
   },
   BinaryExpression(node) {
-    return `${gen(node.left)} ${node.operator} ${gen(node.right)}`;
+    return `(${gen(node.left)} ${node.operator} ${gen(node.right)})`;
   },
   LogicalExpression(node) {
-    return `${gen(node.left)} ${node.operator} ${gen(node.right)}`;
+    return `(${gen(node.left)} ${node.operator} ${gen(node.right)})`;
   },
   DoStatement(node) {
     let out = "";
     out += `do\n`;
     out += indent(node.body.map(gen).join("\n"));
-    out += "\nend";
+    out += "\nend;";
     return out;
   },
   WhileStatement(node) {
     let out = "";
     out += `while ${gen(node.condition)} do\n`;
     out += indent(node.body.map(gen).join("\n"));
-    out += "\nend";
+    out += "\nend;";
     return out;
   },
   RepeatStatement(node) {
     let out = "";
     out += "repeat\n";
     out += indent(node.body.map(gen).join("\n"));
-    out += `\nuntil ${gen(node.condition)}`;
+    out += `\nuntil ${gen(node.condition)};`;
     return out;
   },
   ForGenericStatement(node) {
@@ -108,7 +108,7 @@ const nodeHandlers = {
       .map(gen)
       .join(", ")} do\n`;
     out += indent(node.body.map(gen).join("\n"));
-    out += "\nend";
+    out += "\nend;";
     return out;
   },
   ForNumericStatement(node) {
@@ -117,11 +117,11 @@ const nodeHandlers = {
     if (node.step) out += `, ${gen(node.step)}`;
     out += " do\n";
     out += indent(node.body.map(gen).join("\n"));
-    out += "\nend";
+    out += "\nend;";
     return out;
   },
   IfStatement(node) {
-    return `${node.clauses.map(gen).join("\n")}\nend`;
+    return `${node.clauses.map(gen).join("\n")}\nend;`;
   },
   IfClause(node) {
     return `if ${gen(node.condition)} then\n${indent(
@@ -172,7 +172,6 @@ function gen(node) {
     throw new Error(`Unhandled: ${util.inspect(node, false, 5, true)}`);
   }
   let text = formatter(node);
-  if (node.inParens) text = `(${text})`;
   return text;
 }
 
